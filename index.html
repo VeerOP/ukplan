@@ -3,683 +3,550 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UK Trip Planner: Optimized Itinerary</title>
+    <title>UK North-to-South: Business & Leisure Expedition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Custom scrollbar for better UX */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 800px;
+            margin: 0 auto;
             height: 300px;
             max-height: 400px;
         }
         @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
+            .chart-container { height: 350px; }
         }
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
+
+        .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .active-tab {
-            border-bottom: 3px solid #059669;
-            color: #059669;
-            font-weight: 600;
+
+        .tab-active {
+            border-bottom: 3px solid #0f172a;
+            color: #0f172a;
+            font-weight: 700;
         }
     </style>
-    <!-- Chosen Palette: Stone & Emerald (Natural, earthy tones suited for UK landscapes + premium feel) -->
-    <!-- Application Structure Plan: 
-         1. Dashboard Header: High-level trip summary (Dates, Total Distance, Key Stats).
-         2. Tabbed Navigation: 
-            - "Optimized Itinerary": The core day-by-day interactive list.
-            - "Trip Analytics": Visualizations of driving load and activity balance.
-            - "Review & Suggestions": AI analysis of the user's specific requests (Cornwall, Cricket, etc.).
-         3. Dynamic Itinerary Section: A vertical timeline where users can expand days to see logistics, stay options, and driving stats. 
-            - Color-coded tags for "Drive", "Activity", "Relax".
-            - Specific highlighting of user-requested changes (Lords Match, Lake District).
-         4. Visualization Section:
-            - Bar Chart: Daily Driving Hours (Goal: Inform fatigue management).
-            - Doughnut Chart: Trip Mix (Nature vs City vs History).
+    <!-- Chosen Palette: Slate & Indigo (Professional for business legs, clean for travel) -->
+    <!-- Application Structure Plan:
+         1. Header: Trip Overview (Dates, Direction, Key Constraints).
+         2. Navigation: Tabs for "Daily Plan", "Vehicle & Logistics", "Trip Analytics".
+         3. Itinerary View: Vertical day list with color-coded tags for "Work", "Drive", "Event".
+         4. Logistics View: Dedicated section for the Car (4 Pax SUV), specific driving legs, and route advice.
+         5. Analytics View: Visuals for driving fatigue management and activity balance.
     -->
     <!-- Visualization & Content Choices:
-         - Driving Load Chart (Bar): Shows hours behind wheel per day. Essential for a road trip to prevent burnout.
-         - Trip Composition (Doughnut): Shows balance of activities.
-         - Interactive Map Alternative (Scatter): Since NO SVG/Maps, I will use a scatter chart to plot relative "Latitude/Longitude" of stops to give a visual sense of the route North.
+         - Route Map (Scatter): Visualizes the geographic drop from Highlands (North) to Cornwall (South) to London.
+         - Driving Load (Bar): Critical for managing the long drives between Manchester/Bristol/Cornwall.
          - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
     -->
 </head>
-<body class="bg-stone-50 text-stone-800 font-sans antialiased selection:bg-emerald-100 selection:text-emerald-800">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900">
 
-    <!-- Top Navigation / Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
+    <!-- Header -->
+    <header class="bg-white sticky top-0 z-50 shadow-sm border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <span class="text-2xl mr-2">🇬🇧</span>
-                    <h1 class="text-xl font-bold tracking-tight text-stone-900">UK Expedition <span class="text-emerald-600">2025</span></h1>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">UK</div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 leading-tight">North to South Expedition</h1>
+                        <p class="text-xs text-slate-500">May 23 - June 8 • Scotland ➔ England</p>
+                    </div>
                 </div>
-                <div class="hidden md:flex space-x-8">
-                    <button onclick="switchTab('itinerary')" id="tab-itinerary" class="active-tab px-3 py-2 text-sm transition-colors hover:text-emerald-600">Day-by-Day Plan</button>
-                    <button onclick="switchTab('analytics')" id="tab-analytics" class="px-3 py-2 text-sm text-stone-500 transition-colors hover:text-emerald-600">Trip Analytics</button>
-                    <button onclick="switchTab('suggestions')" id="tab-suggestions" class="px-3 py-2 text-sm text-stone-500 transition-colors hover:text-emerald-600">Optimizer Report</button>
-                </div>
+                
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="switchTab('itinerary')" id="tab-itinerary" class="tab-active px-1 py-4 text-sm font-medium transition-colors hover:text-indigo-600">Daily Schedule</button>
+                    <button onclick="switchTab('logistics')" id="tab-logistics" class="px-1 py-4 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600">Vehicle & Routes</button>
+                    <button onclick="switchTab('analytics')" id="tab-analytics" class="px-1 py-4 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600">Analytics</button>
+                </nav>
+
                 <!-- Mobile Menu Button -->
-                <div class="md:hidden">
-                    <button onclick="toggleMobileMenu()" class="text-stone-500 hover:text-emerald-600 focus:outline-none">
-                        ☰
-                    </button>
-                </div>
+                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-500 hover:text-indigo-600">
+                    <span class="text-2xl">☰</span>
+                </button>
             </div>
-            <!-- Mobile Menu Dropdown -->
-            <div id="mobile-menu" class="hidden md:hidden pb-4">
-                <button onclick="switchTab('itinerary')" class="block w-full text-left px-4 py-2 text-sm hover:bg-emerald-50">Day-by-Day Plan</button>
-                <button onclick="switchTab('analytics')" class="block w-full text-left px-4 py-2 text-sm hover:bg-emerald-50">Trip Analytics</button>
-                <button onclick="switchTab('suggestions')" class="block w-full text-left px-4 py-2 text-sm hover:bg-emerald-50">Optimizer Report</button>
+        </div>
+        
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100">
+            <div class="px-4 py-2 space-y-1">
+                <button onclick="switchTab('itinerary')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-md">Daily Schedule</button>
+                <button onclick="switchTab('logistics')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-md">Vehicle & Routes</button>
+                <button onclick="switchTab('analytics')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-md">Analytics</button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- Intro / Context -->
-        <div class="mb-8 text-center max-w-3xl mx-auto">
-            <h2 class="text-3xl font-bold text-stone-900 mb-4">Your Optimized Journey</h2>
-            <p class="text-lg text-stone-600">
-                Based on your request, we have redesigned the 16-day plan into an optimized <strong>19-day itinerary</strong>. This allows for the inclusion of the <strong>Lords Cricket Match</strong>, a deeper exploration of the <strong>Lake District</strong>, and a smoother drive through the <strong>Scottish Highlands</strong>.
-            </p>
+        <!-- Context Banner -->
+        <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h2 class="text-xl font-bold text-indigo-900">Trip Strategy: The "Business & Coast" Route</h2>
+                <p class="text-indigo-700 text-sm mt-1">
+                    Optimized to hit <strong>Manchester (Thu May 29)</strong> and <strong>Bristol (Fri May 30)</strong> on weekdays for office work, wrapping up with the <strong>Lords Cricket Match (Wed June 4)</strong>.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <span class="bg-white text-indigo-800 text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-200 shadow-sm">4 Travelers</span>
+                <span class="bg-white text-indigo-800 text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-200 shadow-sm">SUV Required</span>
+                <span class="bg-white text-indigo-800 text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-200 shadow-sm">~2,100 km Drive</span>
+            </div>
         </div>
 
         <!-- VIEW 1: ITINERARY -->
         <div id="itinerary-view" class="fade-in space-y-6">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold text-stone-800">Detailed Schedule (May 31 - June 18)</h3>
-                <div class="text-sm text-stone-500">
-                    <span class="inline-block w-3 h-3 bg-emerald-500 rounded-full mr-1"></span> Low Drive
-                    <span class="inline-block w-3 h-3 bg-yellow-500 rounded-full mr-1 ml-3"></span> Med Drive
-                    <span class="inline-block w-3 h-3 bg-rose-500 rounded-full mr-1 ml-3"></span> Heavy Drive
+            
+            <!-- Controls -->
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-slate-800">Day-by-Day Plan</h3>
+                <div class="text-xs text-slate-500 bg-white px-2 py-1 rounded border border-slate-200 shadow-sm">
+                    Click cards for details
                 </div>
             </div>
 
-            <!-- Dynamic Itinerary List Container -->
-            <div id="itinerary-list" class="space-y-4">
-                <!-- Javascript will populate this -->
+            <!-- List Container -->
+            <div id="day-list" class="space-y-4">
+                <!-- JS Populated -->
             </div>
         </div>
 
-        <!-- VIEW 2: ANALYTICS -->
-        <div id="analytics-view" class="hidden fade-in">
-            <div class="mb-6">
-                <h3 class="text-xl font-semibold text-stone-800">Trip Logistics & Balance</h3>
-                <p class="text-stone-600">Analyze the driving intensity and activity mix to ensure a comfortable pace.</p>
+        <!-- VIEW 2: LOGISTICS -->
+        <div id="logistics-view" class="hidden fade-in space-y-8">
+            
+            <!-- Vehicle Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                    <h3 class="text-lg font-bold text-slate-800">🚙 Car Rental Strategy (4 Adults)</h3>
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="font-bold text-slate-700 mb-2">Recommended Vehicle Class</h4>
+                        <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+                            <div class="text-2xl font-bold text-indigo-900 mb-1">Standard/Full-Size SUV</div>
+                            <p class="text-sm text-indigo-800">Examples: <em>Volvo XC60, Nissan X-Trail, Toyota RAV4, Kia Sorento</em></p>
+                        </div>
+                        <ul class="mt-4 space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start gap-2"><span class="text-green-500">✔</span> <strong>Boot Space:</strong> Critical for 4 suitcases. Do not book a "Compact" SUV.</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500">✔</span> <strong>Transmission:</strong> Automatic (Essential for relaxed driving).</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500">✔</span> <strong>Pick-up:</strong> Edinburgh Airport (May 25).</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500">✔</span> <strong>Drop-off:</strong> London Heathrow (June 2).</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-700 mb-2">Driving Rules & Tips</h4>
+                        <div class="space-y-3">
+                            <div class="flex gap-3">
+                                <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">🇬🇧</div>
+                                <p class="text-sm text-slate-600"><strong>Keep Left:</strong> Driver sits on the right. Roundabouts go clockwise.</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">🅿️</div>
+                                <p class="text-sm text-slate-600"><strong>City Parking:</strong> In Manchester & Bristol, pre-book hotel parking. Street parking is scarce.</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">⛽</div>
+                                <p class="text-sm text-slate-600"><strong>Fuel:</strong> "Petrol" (Green) or "Diesel" (Black). Check car cap carefully.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Chart 1: Driving Hours -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
-                    <h4 class="text-lg font-medium mb-4 text-stone-700">🚗 Daily Driving Intensity</h4>
-                    <div class="chart-container">
-                        <canvas id="drivingChart"></canvas>
-                    </div>
-                    <p class="text-xs text-stone-500 mt-2 text-center">Recommended limit: 4-5 hours/day for enjoyment.</p>
+            <!-- Route Table -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                    <h3 class="text-lg font-bold text-slate-800">🛣️ Major Transit Legs</h3>
                 </div>
-
-                <!-- Chart 2: Trip Composition -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
-                    <h4 class="text-lg font-medium mb-4 text-stone-700">⚖️ Experience Balance</h4>
-                    <div class="chart-container">
-                        <canvas id="balanceChart"></canvas>
-                    </div>
-                    <p class="text-xs text-stone-500 mt-2 text-center">A healthy mix of Nature, City, and History.</p>
-                </div>
-
-                 <!-- Chart 3: Route Visualization (Scatter) -->
-                 <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 md:col-span-2">
-                    <h4 class="text-lg font-medium mb-4 text-stone-700">📍 Route Trajectory (South to North)</h4>
-                    <div class="chart-container">
-                        <canvas id="routeChart"></canvas>
-                    </div>
-                    <p class="text-xs text-stone-500 mt-2 text-center">Visualizing your journey from London (Bottom Right) to Skye (Top Left).</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500">
+                            <tr>
+                                <th class="px-6 py-3">Route</th>
+                                <th class="px-6 py-3">Dist (km)</th>
+                                <th class="px-6 py-3">Time (Non-stop)</th>
+                                <th class="px-6 py-3">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="route-table-body" class="divide-y divide-slate-100">
+                            <!-- JS populated -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <!-- VIEW 3: SUGGESTIONS / OPTIMIZER -->
-        <div id="suggestions-view" class="hidden fade-in">
-            <div class="bg-emerald-50 border-l-4 border-emerald-500 p-6 rounded-r-lg mb-8">
-                <h3 class="text-xl font-bold text-emerald-800 mb-2">✅ Integrated Changes</h3>
-                <ul class="list-disc pl-5 space-y-2 text-emerald-800">
-                    <li><strong>Lords Cricket Match:</strong> Scheduled for June 4th (Day 5). London itinerary adjusted.</li>
-                    <li><strong>Lake District:</strong> Added 2 nights in Windermere between York and Edinburgh.</li>
-                    <li><strong>Glasgow:</strong> Added as a stopover/visit on the way from Lake District to Edinburgh.</li>
-                    <li><strong>Aviemore & Highlands:</strong> Included on the route to Inverness.</li>
-                    <li><strong>Trip Duration:</strong> Extended to 19 days to accommodate a relaxed pace (fits 15-20 day limit).</li>
-                </ul>
-            </div>
+        <!-- VIEW 3: ANALYTICS -->
+        <div id="analytics-view" class="hidden fade-in space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Driving Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="text-lg font-bold text-slate-800 mb-4">Daily Driving Load (km)</h4>
+                    <div class="chart-container">
+                        <canvas id="driveChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2 text-center">Spikes indicate major travel days. Plan rest stops accordingly.</p>
+                </div>
 
-            <div class="bg-rose-50 border-l-4 border-rose-500 p-6 rounded-r-lg mb-8">
-                <h3 class="text-xl font-bold text-rose-800 mb-2">❌ Excluded (With Reason)</h3>
-                <ul class="list-disc pl-5 space-y-2 text-rose-800">
-                    <li><strong>Cornwall:</strong> Too far South-West. Would add ~12 hours of driving and require 3-4 extra days, compromising the Northbound flow.</li>
-                    <li><strong>Ireland:</strong> Requires a ferry/flight and dedicated 5-7 days. Adding it to this 19-day road trip would make the schedule chaotic and exhausting.</li>
-                    <li><strong>Buckingham Palace (Interior):</strong> Note that State Rooms are usually only open late July–September. You can view the exterior/Changing of the Guard (included).</li>
-                </ul>
-            </div>
+                <!-- Trip Mix -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="text-lg font-bold text-slate-800 mb-4">Activity Balance</h4>
+                    <div class="chart-container">
+                        <canvas id="mixChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2 text-center">Healthy mix of Nature, City, and Work commitments.</p>
+                </div>
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
-                <h3 class="text-lg font-bold text-stone-800 mb-4">💡 Optimization Tips</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="p-4 bg-stone-50 rounded-lg">
-                        <div class="text-2xl mb-2">🏎️</div>
-                        <h4 class="font-bold text-stone-700">Car Rental Strategy</h4>
-                        <p class="text-sm text-stone-600 mt-1">Pick up car in York or London outskirts on Day 8. Do NOT drive in central London.</p>
+                <!-- Route Scatter -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 md:col-span-2">
+                    <h4 class="text-lg font-bold text-slate-800 mb-4">Route Trajectory (North to South)</h4>
+                    <div class="chart-container">
+                        <canvas id="routeMap"></canvas>
                     </div>
-                    <div class="p-4 bg-stone-50 rounded-lg">
-                        <div class="text-2xl mb-2">🏰</div>
-                        <h4 class="font-bold text-stone-700">Explorer Pass</h4>
-                        <p class="text-sm text-stone-600 mt-1">Buy the "Historic Scotland Explorer Pass" for Edinburgh/Stirling/Urquhart to save money.</p>
-                    </div>
-                    <div class="p-4 bg-stone-50 rounded-lg">
-                        <div class="text-2xl mb-2">🌧️</div>
-                        <h4 class="font-bold text-stone-700">Weather Gear</h4>
-                        <p class="text-sm text-stone-600 mt-1">Scottish Highlands in June can still be wet. Pack waterproof layers.</p>
-                    </div>
+                    <p class="text-xs text-slate-500 mt-2 text-center">Visualizing your journey from the Highlands down to Cornwall.</p>
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- Modal for Day Details (Hidden by default) -->
-    <div id="day-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[60] flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all">
-            <div class="p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <h3 id="modal-title" class="text-2xl font-bold text-stone-900">Day Title</h3>
-                    <button onclick="closeModal()" class="text-stone-400 hover:text-stone-600 text-2xl">&times;</button>
-                </div>
-                <div id="modal-content" class="space-y-4 text-stone-700">
-                    <!-- Dynamic Content -->
-                </div>
-                <div class="mt-6 pt-4 border-t border-stone-100 flex justify-end">
-                    <button onclick="closeModal()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition">Close</button>
-                </div>
+    <!-- Modal for Day Details -->
+    <div id="details-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col transform transition-all scale-100">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="modal-title" class="text-xl font-bold text-slate-800">Day Details</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+            </div>
+            <div id="modal-content" class="p-6 overflow-y-auto space-y-4">
+                <!-- Content -->
+            </div>
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 text-sm font-medium">Close</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- DATA STORAGE ---
-        // This array represents the "Optimized" itinerary incorporating user requests.
+        // --- DATA ---
         const itinerary = [
             {
-                day: 1,
-                date: "May 31 / June 1",
-                title: "Arrival in London",
-                location: "London",
-                activityType: "City",
-                driveHours: 0,
-                summary: "Land in London. Check-in and relax.",
-                details: "Arrive at Heathrow. Take Heathrow Express to Paddington. Check into hotel/Airbnb. Evening walk in Hyde Park & Kensington Gardens to beat jet lag. Early dinner.",
-                stay: "Central London (Kensington/Paddington/Marylebone)",
-                highlight: false
+                day: 1, date: "Fri May 23", loc: "Edinburgh", type: "Travel/City",
+                title: "Arrival in Scotland",
+                desc: "Arrive Edinburgh Airport (EDI). Transfer to City Centre. Relax/Dinner.",
+                km: 0, time: "0h",
+                details: "Landing day. Do not rent car yet (save 2 days rental/parking). Take Tram to Princes Street. Walk the Royal Mile. Dinner at 'The Witchery' or 'Dishoom Edinburgh'.",
+                stay: "Edinburgh City Centre"
             },
             {
-                day: 2,
-                date: "June 2",
-                title: "Iconic London",
-                location: "London",
-                activityType: "History",
-                driveHours: 0,
-                summary: "Buckingham Palace, Westminster, & The Thames.",
-                details: "Morning: Buckingham Palace (Changing of the Guard @ 11am - check schedule). Walk through St James's Park to Westminster Abbey & Big Ben. Afternoon: Walk the South Bank of the Thames. Optional: London Eye.",
-                stay: "Same as previous night",
-                highlight: false
+                day: 2, date: "Sat May 24", loc: "Edinburgh", type: "City",
+                title: "Edinburgh Exploration",
+                desc: "Edinburgh Castle, Victoria St, Arthur's Seat.",
+                km: 0, time: "0h",
+                details: "Full day in the capital. Morning: Edinburgh Castle (Book slots!). Lunch: Grassmarket. Afternoon: Hike Arthur's Seat for views or visit National Museum of Scotland.",
+                stay: "Edinburgh City Centre"
             },
             {
-                day: 3,
-                date: "June 3",
-                title: "Museums & Culture",
-                location: "London",
-                activityType: "Culture",
-                driveHours: 0,
-                summary: "British Museum and Covent Garden.",
-                details: "Morning: British Museum (Rosetta Stone, Elgin Marbles). Lunch in Covent Garden. Afternoon: Shopping on Oxford Street or visit Natural History Museum. Evening: West End Show (Lion King or Hamilton).",
-                stay: "Same as previous night",
-                highlight: false
+                day: 3, date: "Sun May 25", loc: "Aviemore", type: "Nature/Drive",
+                title: "Into the Highlands",
+                desc: "Pick up Car. Drive North to Cairngorms.",
+                km: 200, time: "3h",
+                details: "Pick up SUV from Edinburgh Airport. Drive M90/A9 North. Stop at Pitlochry (Dam/Salmon Ladder). Continue to Aviemore. Evening walk at Loch Morlich.",
+                stay: "Aviemore or Inverness"
             },
             {
-                day: 4,
-                date: "June 4",
-                title: "🏏 MATCH DAY: England vs NZ",
-                location: "London (Lords)",
-                activityType: "Sports",
-                driveHours: 0,
-                summary: "Full day at the 'Home of Cricket'.",
-                details: "Head to St John's Wood. Watch England vs New Zealand at Lord's Cricket Ground. This is a bucket list experience. Ensure tickets are booked well in advance. Evening: Dinner in St John's Wood or Primrose Hill.",
-                stay: "Same as previous night",
-                highlight: true
+                day: 4, date: "Mon May 26", loc: "Skye", type: "Nature/Drive",
+                title: "Loch Ness & Skye",
+                desc: "Monster hunting & The Misty Isle.",
+                km: 240, time: "3.5h",
+                details: "Drive to Loch Ness (Urquhart Castle). Continue West on A87 via Eilean Donan Castle (Iconic photo stop). Cross Skye Bridge. Stay near Portree.",
+                stay: "Isle of Skye (Portree)"
             },
             {
-                day: 5,
-                date: "June 5",
-                title: "Tower & History",
-                location: "London",
-                activityType: "History",
-                driveHours: 0,
-                summary: "Tower of London and Borough Market.",
-                details: "Morning: Tower of London (Crown Jewels). Walk across Tower Bridge. Lunch: Borough Market (Foodie paradise). Afternoon: The Shard view or HMS Belfast. Evening: Sky Garden (free booking required).",
-                stay: "Same as previous night",
-                highlight: false
+                day: 5, date: "Tue May 27", loc: "Glasgow", type: "Drive/Nature",
+                title: "Glencoe to Glasgow",
+                desc: "The 'Skyfall' Route. Dramatic scenery.",
+                km: 340, time: "5h",
+                details: "Early start. Drive South via Fort William. Drive through Glencoe (stops: Three Sisters). Drive along Loch Lomond. Arrive Glasgow evening.",
+                stay: "Glasgow City"
             },
             {
-                day: 6,
-                date: "June 6",
-                title: "Day Trip: Windsor or Oxford",
-                location: "London / Outskirts",
-                activityType: "History",
-                driveHours: 1.5,
-                summary: "Explore Royal Windsor or Academic Oxford.",
-                details: "Take a train to Windsor Castle (Queen's residence) OR Oxford University. Both are easy ~1hr train rides. Return to London for dinner.",
-                stay: "Same as previous night",
-                highlight: false
+                day: 6, date: "Wed May 28", loc: "Windermere", type: "Nature/Drive",
+                title: "Glasgow to Lake District",
+                desc: "Crossing the border into England.",
+                km: 240, time: "3h",
+                details: "Morning: Glasgow Cathedral/Necropolis. Drive M74 South. Enter Lake District. Afternoon: Bowness-on-Windermere, maybe a lake cruise.",
+                stay: "Windermere/Ambleside"
             },
             {
-                day: 7,
-                date: "June 7",
-                title: "Harry Potter & Farewell London",
-                location: "London",
-                activityType: "Fun",
-                driveHours: 0,
-                summary: "Platform 9 3/4 and leisure.",
-                details: "Morning: King's Cross Station (Platform 9 3/4 shop). Free time for shopping or packing. Prepare for the road trip tomorrow.",
-                stay: "Same as previous night",
-                highlight: false
+                day: 7, date: "Thu May 29", loc: "Manchester", type: "Work/City",
+                title: "Office Work (MCR)",
+                desc: "Morning drive to Manchester. Half-day Office.",
+                km: 130, time: "1.5h",
+                details: "Drive M6 South to Manchester (1.5 hrs). **12:00 PM - 5:00 PM: Office Work.** Evening: Dinner in Spinningfields or Northern Quarter.",
+                stay: "Manchester City Centre"
             },
             {
-                day: 8,
-                date: "June 8",
-                title: "Drive to York",
-                location: "York",
-                activityType: "Travel",
-                driveHours: 4.5,
-                summary: "Pick up Car. Drive North. Explore York.",
-                details: "Pick up Rental Car (Compact SUV). Drive M1/A1(M) North to York (~4 hrs). Check-in. Evening walk: The Shambles (Harry Potter vibes) and York Minster exterior.",
-                stay: "York (Inside or near city walls)",
-                highlight: false
+                day: 8, date: "Fri May 30", loc: "Bristol", type: "Work/Drive",
+                title: "Office Work (Bristol)",
+                desc: "Early drive to Bristol. Half-day Office.",
+                km: 270, time: "3.5h",
+                details: "**Start very early (6:00 AM)** to beat traffic. Drive M6/M5 South to Bristol. **12:00 PM - 5:00 PM: Office Work.** Evening: Clifton Suspension Bridge.",
+                stay: "Bristol"
             },
             {
-                day: 9,
-                date: "June 9",
-                title: "York to The Lake District",
-                location: "Windermere",
-                activityType: "Nature",
-                driveHours: 2.5,
-                summary: "Cross country to the Lakes.",
-                details: "Morning: Walk York City Walls. Drive West across the Pennines to the Lake District (Windermere/Bowness). Afternoon: Lake Windermere boat cruise. *Added based on request*.",
-                stay: "Windermere or Ambleside",
-                highlight: true
+                day: 9, date: "Sat May 31", loc: "Cornwall", type: "Nature/Drive",
+                title: "The Cornish Coast",
+                desc: "Drive to St Ives. Coastal relaxation.",
+                km: 300, time: "3.5h",
+                details: "Weekend! Drive M5/A30 South-West into Cornwall. Head to St Ives. Beach time, Tate St Ives, or coastal hike. Fish & Chips dinner.",
+                stay: "St Ives or Penzance"
             },
             {
-                day: 10,
-                date: "June 10",
-                title: "Exploring The Lakes",
-                location: "Lake District",
-                activityType: "Nature",
-                driveHours: 1.5,
-                summary: "Hiking and Scenic Drives.",
-                details: "Full day in Lake District. Drive via Kirkstone Pass. Visit Ullswater or Grasmere (Wordsworth's home). Optional: Beatrix Potter world if interested. Scenic, relaxing day.",
-                stay: "Same as previous night",
-                highlight: true
+                day: 10, date: "Sun June 1", loc: "Cornwall", type: "Nature",
+                title: "St Michael's Mount",
+                desc: "The island castle & beaches.",
+                km: 30, time: "1h",
+                details: "Visit St Michael's Mount (check tide times to walk the causeway). Afternoon: Minack Theatre (outdoor amphitheater) or Lands End.",
+                stay: "St Ives or Penzance"
             },
             {
-                day: 11,
-                date: "June 11",
-                title: "Lakes -> Glasgow -> Edinburgh",
-                location: "Edinburgh",
-                activityType: "Travel",
-                driveHours: 3.5,
-                summary: "Stop in Glasgow, End in Edinburgh.",
-                details: "Drive North on M6/M74. Stop in Glasgow (George Square, Cathedral) for lunch/exploring (3-4 hours). Continue to Edinburgh. Drop car? (Or keep for Highlands - recommended).",
-                stay: "Edinburgh City Centre",
-                highlight: true
+                day: 11, date: "Mon June 2", loc: "London", type: "Travel",
+                title: "Return to London",
+                desc: "Long drive back. Drop Rental Car.",
+                km: 460, time: "5.5h",
+                details: "Long transit day. Drive A30/M3 to London Heathrow. **Return Car.** Take Heathrow Express to Central London. Check in.",
+                stay: "London (Kensington/Marylebone)"
             },
             {
-                day: 12,
-                date: "June 12",
-                title: "Edinburgh City",
-                location: "Edinburgh",
-                activityType: "History",
-                driveHours: 0,
-                summary: "Castle and Royal Mile.",
-                details: "Walk the Royal Mile. Visit Edinburgh Castle (Book ahead!). Victoria Street. Hike Arthur's Seat for sunset views if energetic.",
-                stay: "Edinburgh City Centre",
-                highlight: false
+                day: 12, date: "Tue June 3", loc: "London", type: "City",
+                title: "London Leisure",
+                desc: "Shopping & Pre-Match relax.",
+                km: 0, time: "0h",
+                details: "Oxford Street shopping, Covent Garden, or Hyde Park. Easy day before the match.",
+                stay: "London"
             },
             {
-                day: 13,
-                date: "June 13",
-                title: "Edinburgh -> Highlands (Aviemore)",
-                location: "Aviemore",
-                activityType: "Nature",
-                driveHours: 2.5,
-                summary: "Gateway to Cairngorms.",
-                details: "Drive North via Perth (Scone Palace option). Enter Cairngorms National Park. Stay in Aviemore. Visit Loch Morlich.",
-                stay: "Aviemore",
-                highlight: true
+                day: 13, date: "Wed June 4", loc: "London", type: "Sports",
+                title: "🏏 LORDS: ENG vs NZ",
+                desc: "The Home of Cricket. Full Day.",
+                km: 0, time: "0h",
+                details: "Head to St John's Wood. **Event: England vs New Zealand Test Match.** Enjoy the atmosphere at Lord's.",
+                stay: "London"
             },
             {
-                day: 14,
-                date: "June 14",
-                title: "Aviemore -> Inverness -> Loch Ness",
-                location: "Inverness/Loch Ness",
-                activityType: "Nature",
-                driveHours: 2,
-                summary: "Monster Hunting.",
-                details: "Short drive to Inverness. Visit Culloden Battlefield (Outlander fans). Drive to Loch Ness. Urquhart Castle ruins. Cruise on the Loch.",
-                stay: "Drumnadrochit or Fort Augustus",
-                highlight: true
+                day: 14, date: "Thu June 5", loc: "London", type: "City",
+                title: "Historic London",
+                desc: "Tower of London, The Shard.",
+                km: 0, time: "0h",
+                details: "Tower of London (Crown Jewels). Borough Market for lunch. The Shard view or Sky Garden.",
+                stay: "London"
             },
             {
-                day: 15,
-                date: "June 15",
-                title: "Loch Ness -> Isle of Skye",
-                location: "Isle of Skye",
-                activityType: "Nature",
-                driveHours: 3,
-                summary: "The most scenic drive.",
-                details: "Drive via Eilean Donan Castle (Most photographed castle). Cross Skye Bridge. Head to Portree.",
-                stay: "Portree or nearby B&B",
-                highlight: false
-            },
-            {
-                day: 16,
-                date: "June 16",
-                title: "Isle of Skye Loop",
-                location: "Isle of Skye",
-                activityType: "Nature",
-                driveHours: 2.5,
-                summary: "Old Man of Storr & Quiraing.",
-                details: "The Trotternish Loop. Hike Old Man of Storr. See Kilt Rock. Visit the Fairy Pools if time permits. Dramatic scenery.",
-                stay: "Same as previous night",
-                highlight: false
-            },
-            {
-                day: 17,
-                date: "June 17",
-                title: "Skye -> Glencoe",
-                location: "Glencoe",
-                activityType: "Nature",
-                driveHours: 3.5,
-                summary: "Harry Potter Viaduct & Bond Skyfall.",
-                details: "Drive south to Glenfinnan Viaduct (Harry Potter train bridge). Continue to Fort William. Drive through Glencoe Valley (James Bond Skyfall location).",
-                stay: "Glencoe or Ballachulish",
-                highlight: false
-            },
-            {
-                day: 18,
-                date: "June 18",
-                title: "Glencoe -> Loch Lomond -> Airport",
-                location: "Departure",
-                activityType: "Travel",
-                driveHours: 2.5,
-                summary: "Final scenic drive and fly out.",
-                details: "Drive past Loch Lomond. Head to Edinburgh Airport or Glasgow Airport for evening flight. Return car.",
-                stay: "N/A (Flight home)",
-                highlight: false
-            },
-             {
-                day: 19,
-                date: "June 19",
-                title: "Buffer Day (Optional)",
-                location: "Anywhere",
-                activityType: "Relax",
-                driveHours: 0,
-                summary: "Extra day if flight is later.",
-                details: "Use this day to extend time in London at the start or Skye in the middle.",
-                stay: "N/A",
-                highlight: false
+                day: 15, date: "Fri June 6", loc: "London", type: "Travel",
+                title: "Departure",
+                desc: "Fly home from LHR/LGW.",
+                km: 0, time: "0h",
+                details: "Last minute souvenirs. Train to airport. Fly out.",
+                stay: "N/A"
             }
         ];
 
-        // --- CORE FUNCTIONS ---
+        // --- RENDER LOGIC ---
 
-        function initApp() {
+        function init() {
             renderItinerary();
-            initCharts();
+            renderRouteTable();
+            renderCharts();
         }
 
-        function switchTab(tabName) {
-            // Hide all views
-            ['itinerary', 'analytics', 'suggestions'].forEach(t => {
+        function switchTab(tab) {
+            ['itinerary', 'logistics', 'analytics'].forEach(t => {
                 document.getElementById(`${t}-view`).classList.add('hidden');
-                document.getElementById(`tab-${t}`).classList.remove('active-tab');
-                document.getElementById(`tab-${t}`).classList.add('text-stone-500');
+                document.getElementById(`tab-${t}`).classList.remove('tab-active');
+                document.getElementById(`tab-${t}`).classList.add('text-slate-500');
             });
-
-            // Show selected
-            document.getElementById(`${tabName}-view`).classList.remove('hidden');
-            document.getElementById(`tab-${tabName}`).classList.add('active-tab');
-            document.getElementById(`tab-${tabName}`).classList.remove('text-stone-500');
-            document.getElementById(`tab-${tabName}`).classList.add('text-emerald-600');
-
-            // Close mobile menu
+            document.getElementById(`${tab}-view`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).classList.add('tab-active');
+            document.getElementById(`tab-${tab}`).classList.remove('text-slate-500');
             document.getElementById('mobile-menu').classList.add('hidden');
         }
 
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+            document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
         function renderItinerary() {
-            const container = document.getElementById('itinerary-list');
-            container.innerHTML = '';
-
+            const container = document.getElementById('day-list');
             itinerary.forEach(item => {
-                const colorClass = item.driveHours > 4 ? 'bg-rose-100 text-rose-800' : 
-                                   item.driveHours > 2 ? 'bg-yellow-100 text-yellow-800' : 
-                                   'bg-emerald-100 text-emerald-800';
-                
-                const highlightBorder = item.highlight ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-stone-200';
-                const highlightBadge = item.highlight ? `<span class="bg-emerald-600 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-full ml-2">New / Requested</span>` : '';
+                let badgeColor = "bg-slate-100 text-slate-700";
+                if(item.type.includes("Work")) badgeColor = "bg-purple-100 text-purple-700 border-purple-200";
+                if(item.type.includes("Nature")) badgeColor = "bg-emerald-100 text-emerald-700 border-emerald-200";
+                if(item.type.includes("Sports")) badgeColor = "bg-orange-100 text-orange-700 border-orange-200";
 
                 const card = document.createElement('div');
-                card.className = `bg-white border ${highlightBorder} rounded-lg shadow-sm hover:shadow-md transition cursor-pointer p-4`;
+                card.className = "bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col md:flex-row gap-4 items-start md:items-center";
                 card.onclick = () => openModal(item);
-
+                
                 card.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-stone-100 rounded-lg flex items-center justify-center font-bold text-stone-700">
-                                D${item.day}
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-stone-900 text-lg flex items-center">
-                                    ${item.title} ${highlightBadge}
-                                </h4>
-                                <p class="text-sm text-stone-500">${item.date} • ${item.location}</p>
-                            </div>
-                        </div>
-                        <div class="hidden sm:block text-right">
-                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colorClass}">
-                                ${item.driveHours > 0 ? '🚗 ' + item.driveHours + ' hrs' : '🚶 No Driving'}
-                            </span>
-                        </div>
+                    <div class="flex-shrink-0 w-16 h-16 bg-slate-50 rounded-lg flex flex-col items-center justify-center border border-slate-100">
+                        <span class="text-xs text-slate-500 font-bold uppercase">Day</span>
+                        <span class="text-xl font-bold text-slate-800">${item.day}</span>
                     </div>
-                    <p class="mt-3 text-stone-600 text-sm line-clamp-2">${item.summary}</p>
+                    <div class="flex-grow">
+                        <div class="flex flex-wrap gap-2 mb-1">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded border ${badgeColor}">${item.type}</span>
+                            <span class="text-xs font-medium text-slate-400 flex items-center">📅 ${item.date}</span>
+                            <span class="text-xs font-medium text-slate-400 flex items-center">📍 ${item.loc}</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-800">${item.title}</h4>
+                        <p class="text-sm text-slate-600">${item.desc}</p>
+                    </div>
+                    <div class="flex-shrink-0 text-right min-w-[80px]">
+                        ${item.km > 0 ? 
+                            `<div class="text-sm font-bold text-slate-700">🚗 ${item.km} km</div><div class="text-xs text-slate-500">${item.time} drive</div>` : 
+                            `<div class="text-sm text-slate-400">No Driving</div>`
+                        }
+                    </div>
                 `;
                 container.appendChild(card);
             });
         }
 
+        function renderRouteTable() {
+            const tbody = document.getElementById('route-table-body');
+            const drives = itinerary.filter(i => i.km > 0);
+            drives.forEach(d => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900">${d.loc} Leg</td>
+                    <td class="px-6 py-4">${d.km}</td>
+                    <td class="px-6 py-4">${d.time}</td>
+                    <td class="px-6 py-4 text-xs">${d.stay.split('(')[0]}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
         function openModal(item) {
-            document.getElementById('modal-title').innerText = `Day ${item.day}: ${item.title}`;
-            
-            let content = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div class="p-3 bg-stone-50 rounded-lg">
-                        <span class="block text-xs text-stone-500 uppercase font-bold">Date</span>
-                        <span class="text-stone-800">${item.date}</span>
+            document.getElementById('modal-title').textContent = `${item.title} (${item.date})`;
+            document.getElementById('modal-content').innerHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-slate-50 rounded border border-slate-100">
+                            <div class="text-xs text-slate-500 uppercase">Location</div>
+                            <div class="font-medium text-slate-800">${item.loc}</div>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded border border-slate-100">
+                            <div class="text-xs text-slate-500 uppercase">Driving</div>
+                            <div class="font-medium text-slate-800">${item.km} km / ${item.time}</div>
+                        </div>
                     </div>
-                    <div class="p-3 bg-stone-50 rounded-lg">
-                        <span class="block text-xs text-stone-500 uppercase font-bold">Location</span>
-                        <span class="text-stone-800">${item.location}</span>
+                    <div>
+                        <h5 class="font-bold text-slate-800 mb-2">Plan Details</h5>
+                        <p class="text-slate-600 leading-relaxed">${item.details}</p>
+                    </div>
+                     <div>
+                        <h5 class="font-bold text-slate-800 mb-2">Accommodation</h5>
+                        <p class="text-slate-600">🏨 ${item.stay}</p>
                     </div>
                 </div>
-                
-                <h4 class="font-bold text-emerald-700 mt-4 border-b border-stone-200 pb-1">📋 The Plan</h4>
-                <p class="leading-relaxed mt-2">${item.details}</p>
-                
-                <h4 class="font-bold text-emerald-700 mt-4 border-b border-stone-200 pb-1">🏨 Where to Stay</h4>
-                <p class="leading-relaxed mt-2">${item.stay}</p>
             `;
-
-            if (item.driveHours > 0) {
-                content += `
-                    <div class="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <h4 class="font-bold text-yellow-800 text-sm">🚗 Driving Logistics</h4>
-                        <p class="text-sm text-yellow-800 mt-1">Approximate driving time: <strong>${item.driveHours} hours</strong>. Allow extra time for stops and photos.</p>
-                    </div>
-                `;
-            }
-
-            document.getElementById('modal-content').innerHTML = content;
-            document.getElementById('day-modal').classList.remove('hidden');
+            document.getElementById('details-modal').classList.remove('hidden');
         }
 
         function closeModal() {
-            document.getElementById('day-modal').classList.add('hidden');
+            document.getElementById('details-modal').classList.add('hidden');
         }
 
-        function initCharts() {
-            // Chart 1: Driving Hours
-            const driveCtx = document.getElementById('drivingChart').getContext('2d');
-            new Chart(driveCtx, {
+        function renderCharts() {
+            // 1. Driving Chart
+            new Chart(document.getElementById('driveChart'), {
                 type: 'bar',
                 data: {
                     labels: itinerary.map(i => `D${i.day}`),
                     datasets: [{
-                        label: 'Driving Hours',
-                        data: itinerary.map(i => i.driveHours),
-                        backgroundColor: itinerary.map(i => i.driveHours > 4 ? '#f43f5e' : (i.driveHours > 2 ? '#eab308' : '#10b981')),
+                        label: 'Kilometers',
+                        data: itinerary.map(i => i.km),
+                        backgroundColor: itinerary.map(i => i.km > 300 ? '#ef4444' : (i.km > 100 ? '#6366f1' : '#cbd5e1')),
                         borderRadius: 4
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, title: { display: true, text: 'Hours' } }
-                    }
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
                 }
             });
 
-            // Chart 2: Balance (Doughnut)
-            const typeCounts = { 'City': 0, 'Nature': 0, 'History': 0, 'Travel': 0, 'Sports': 0, 'Relax': 0 };
-            itinerary.forEach(i => typeCounts[i.activityType] = (typeCounts[i.activityType] || 0) + 1);
-            
-            const balanceCtx = document.getElementById('balanceChart').getContext('2d');
-            new Chart(balanceCtx, {
+            // 2. Mix Chart
+            const types = {};
+            itinerary.forEach(i => {
+                const t = i.type.split('/')[0];
+                types[t] = (types[t] || 0) + 1;
+            });
+            new Chart(document.getElementById('mixChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(typeCounts),
+                    labels: Object.keys(types),
                     datasets: [{
-                        data: Object.values(typeCounts),
-                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#64748b', '#8b5cf6', '#a8a29e'],
+                        data: Object.values(types),
+                        backgroundColor: ['#6366f1', '#10b981', '#f97316', '#64748b', '#a855f7'],
                         borderWidth: 0
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right' }
-                    }
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right' } }
                 }
             });
 
-            // Chart 3: Route Scatter Plot (Simulated Map)
-            // X = Longitude approx, Y = Latitude approx
-            const routeCtx = document.getElementById('routeChart').getContext('2d');
+            // 3. Route Map (Scatter)
+            // Simulating Latitude (Y) vs Day (X)
+            // North (Scotland) ~ 10, South (Cornwall) ~ 1
+            const latMap = { 
+                "Edinburgh": 9, "Aviemore": 10, "Skye": 9.5, "Glasgow": 8, 
+                "Windermere": 6, "Manchester": 5, "Bristol": 3, "Cornwall": 1, "London": 2 
+            };
+            const mapData = itinerary.map(i => ({ x: i.day, y: latMap[i.loc] || 2 }));
             
-            // Simplified coordinates for UK cities relative to each other
-            // London (51.5, -0.1), York (53.9, -1.0), Edinburgh (55.9, -3.1), Inverness (57.4, -4.2), Skye (57.4, -6.2)
-            // Normalized for chart: X (West-East), Y (South-North)
-            const routeData = [
-                { x: 8, y: 1, name: "London" },
-                { x: 7, y: 4, name: "York" },
-                { x: 5, y: 5, name: "Lakes" },
-                { x: 4, y: 6, name: "Glasgow" },
-                { x: 5, y: 7, name: "Edinburgh" },
-                { x: 4, y: 9, name: "Inverness" },
-                { x: 1, y: 9, name: "Skye" },
-                { x: 2, y: 6, name: "Glencoe" }
-            ];
-
-            new Chart(routeCtx, {
+            new Chart(document.getElementById('routeMap'), {
                 type: 'scatter',
                 data: {
                     datasets: [{
-                        label: 'Stops',
-                        data: routeData,
-                        backgroundColor: '#059669',
-                        pointRadius: 8
-                    }, {
-                        type: 'line',
-                        label: 'Path',
-                        data: routeData,
-                        borderColor: '#a8a29e',
-                        borderDash: [5, 5],
+                        label: 'Route Path',
+                        data: mapData,
                         showLine: true,
-                        pointRadius: 0
+                        borderColor: '#0f172a',
+                        backgroundColor: '#6366f1',
+                        pointRadius: 6,
+                        tension: 0.3
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: { display: false, min: 0, max: 10 },
-                        y: { display: false, min: 0, max: 11 }
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => context.raw.name || ''
-                            }
-                        }
+                        y: { display: true, title: {display: true, text: '← South | North →'}, ticks: {display: false} },
+                        x: { title: {display: true, text: 'Day of Trip'} }
                     }
                 }
             });
         }
 
-        // Initialize on Load
-        window.addEventListener('DOMContentLoaded', initApp);
+        window.onload = init;
 
     </script>
 </body>
