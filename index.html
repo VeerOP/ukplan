@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UK North-to-South: Business & Leisure Expedition</title>
+    <title>UK Ultimate: Office Days & Evening Excursions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f8fafc; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -25,7 +24,7 @@
             .chart-container { height: 350px; }
         }
 
-        .fade-in { animation: fadeIn 0.5s ease-out; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -37,49 +36,43 @@
             font-weight: 700;
         }
     </style>
-    <!-- Chosen Palette: Slate & Indigo (Professional for business legs, clean for travel) -->
+    <!-- Chosen Palette: Slate & Amber (Warm, sunset tones reflecting the new focus on "Evening Excursions" after office hours) -->
     <!-- Application Structure Plan:
-         1. Header: Trip Overview (Dates, Direction, Key Constraints).
-         2. Navigation: Tabs for "Daily Plan", "Vehicle & Logistics", "Trip Analytics".
-         3. Itinerary View: Vertical day list with color-coded tags for "Work", "Drive", "Event".
-         4. Logistics View: Dedicated section for the Car (4 Pax SUV), specific driving legs, and route advice.
-         5. Analytics View: Visuals for driving fatigue management and activity balance.
+         1. Header & Context: Focus on the long summer daylight hours enabling "double-duty" office days.
+         2. Tab Navigation: "Daily Schedule", "Vehicle & Logistics", "Analytics".
+         3. Itinerary View: Integrated "Evening Excursions" (Chester, Wales) with special visual markers to show they happen post-5PM.
+         4. Logistics View: Updated to reflect the short evening driving hops.
     -->
     <!-- Visualization & Content Choices:
-         - Route Map (Scatter): Visualizes the geographic drop from Highlands (North) to Cornwall (South) to London.
-         - Driving Load (Bar): Critical for managing the long drives between Manchester/Bristol/Cornwall.
+         - Route Map (Scatter): Shows the slight westward evening hops to Chester and Wales.
+         - Driving Load (Bar): Stacked or adjusted to show "Core Drive" vs "Evening Hop".
          - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
     -->
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-amber-100 selection:text-amber-900">
 
     <!-- Header -->
     <header class="bg-white sticky top-0 z-50 shadow-sm border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">UK</div>
+                    <div class="w-10 h-10 bg-amber-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">UK</div>
                     <div>
-                        <h1 class="text-lg font-bold text-slate-900 leading-tight">North to South Expedition</h1>
-                        <p class="text-xs text-slate-500">May 23 - June 8 • Scotland ➔ England</p>
+                        <h1 class="text-lg font-bold text-slate-900 leading-tight">Maximized Expedition</h1>
+                        <p class="text-xs text-slate-500">Business + Evening Explorations</p>
                     </div>
                 </div>
                 
-                <!-- Desktop Nav -->
                 <nav class="hidden md:flex space-x-8">
-                    <button onclick="switchTab('itinerary')" id="tab-itinerary" class="tab-active px-1 py-4 text-sm font-medium transition-colors hover:text-indigo-600">Daily Schedule</button>
-                    <button onclick="switchTab('logistics')" id="tab-logistics" class="px-1 py-4 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600">Vehicle & Routes</button>
-                    <button onclick="switchTab('analytics')" id="tab-analytics" class="px-1 py-4 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600">Analytics</button>
+                    <button onclick="switchTab('itinerary')" id="tab-itinerary" class="tab-active px-1 py-4 text-sm font-medium transition-colors hover:text-amber-600">Daily Schedule</button>
+                    <button onclick="switchTab('logistics')" id="tab-logistics" class="px-1 py-4 text-sm font-medium text-slate-500 transition-colors hover:text-amber-600">Vehicle & Routes</button>
+                    <button onclick="switchTab('analytics')" id="tab-analytics" class="px-1 py-4 text-sm font-medium text-slate-500 transition-colors hover:text-amber-600">Analytics</button>
                 </nav>
 
-                <!-- Mobile Menu Button -->
-                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-500 hover:text-indigo-600">
-                    <span class="text-2xl">☰</span>
-                </button>
+                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-500 hover:text-amber-600 text-2xl">☰</button>
             </div>
         </div>
         
-        <!-- Mobile Nav -->
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100">
             <div class="px-4 py-2 space-y-1">
                 <button onclick="switchTab('itinerary')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-md">Daily Schedule</button>
@@ -92,32 +85,29 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <!-- Context Banner -->
-        <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm">
             <div>
-                <h2 class="text-xl font-bold text-indigo-900">Trip Strategy: The "Business & Coast" Route</h2>
-                <p class="text-indigo-700 text-sm mt-1">
-                    Optimized to hit <strong>Manchester (Thu May 29)</strong> and <strong>Bristol (Fri May 30)</strong> on weekdays for office work, wrapping up with the <strong>Lords Cricket Match (Wed June 4)</strong>.
+                <h2 class="text-xl font-bold text-amber-900 flex items-center gap-2">
+                    <span class="text-2xl">🌇</span> Leveraging the Late Sunset
+                </h2>
+                <p class="text-amber-800 text-sm mt-1 max-w-3xl">
+                    In late May, the sun sets around <strong>9:30 PM</strong>. We have updated your office days (May 29 & 30) to include "Evening Excursions." Since York is geographically out of the way, we added <strong>Chester (The York Alternative)</strong> and an evening trip to <strong>Wales</strong>. We also swapped your London day trip to accommodate <strong>Oxford</strong>.
                 </p>
             </div>
-            <div class="flex flex-wrap gap-2">
-                <span class="bg-white text-indigo-800 text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-200 shadow-sm">4 Travelers</span>
-                <span class="bg-white text-indigo-800 text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-200 shadow-sm">SUV Required</span>
-                <span class="bg-white text-indigo-800 text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-200 shadow-sm">~2,100 km Drive</span>
+            <div class="flex flex-col gap-2 shrink-0">
+                <span class="bg-white text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full border border-amber-200 shadow-sm flex items-center gap-1">💼 2 Office Half-Days</span>
+                <span class="bg-white text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full border border-amber-200 shadow-sm flex items-center gap-1">🏰 3 Countries Visited</span>
             </div>
         </div>
 
         <!-- VIEW 1: ITINERARY -->
         <div id="itinerary-view" class="fade-in space-y-6">
-            
-            <!-- Controls -->
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-slate-800">Day-by-Day Plan</h3>
+                <h3 class="text-lg font-bold text-slate-800">18-Day Master Itinerary</h3>
                 <div class="text-xs text-slate-500 bg-white px-2 py-1 rounded border border-slate-200 shadow-sm">
-                    Click cards for details
+                    Click any day for details
                 </div>
             </div>
-
-            <!-- List Container -->
             <div id="day-list" class="space-y-4">
                 <!-- JS Populated -->
             </div>
@@ -125,65 +115,47 @@
 
         <!-- VIEW 2: LOGISTICS -->
         <div id="logistics-view" class="hidden fade-in space-y-8">
-            
-            <!-- Vehicle Section -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800">🚙 Car Rental Strategy (4 Adults)</h3>
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-slate-800">🚙 Vehicle & Driving Logic</h3>
+                    <span class="text-xs font-bold bg-amber-100 text-amber-800 px-2 py-1 rounded">4 Adults / SUV Req.</span>
                 </div>
                 <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <h4 class="font-bold text-slate-700 mb-2">Recommended Vehicle Class</h4>
-                        <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-100">
-                            <div class="text-2xl font-bold text-indigo-900 mb-1">Standard/Full-Size SUV</div>
-                            <p class="text-sm text-indigo-800">Examples: <em>Volvo XC60, Nissan X-Trail, Toyota RAV4, Kia Sorento</em></p>
-                        </div>
-                        <ul class="mt-4 space-y-2 text-sm text-slate-600">
-                            <li class="flex items-start gap-2"><span class="text-green-500">✔</span> <strong>Boot Space:</strong> Critical for 4 suitcases. Do not book a "Compact" SUV.</li>
-                            <li class="flex items-start gap-2"><span class="text-green-500">✔</span> <strong>Transmission:</strong> Automatic (Essential for relaxed driving).</li>
-                            <li class="flex items-start gap-2"><span class="text-green-500">✔</span> <strong>Pick-up:</strong> Edinburgh Airport (May 25).</li>
-                            <li class="flex items-start gap-2"><span class="text-green-500">✔</span> <strong>Drop-off:</strong> London Heathrow (June 2).</li>
+                        <h4 class="font-bold text-slate-700 mb-4">The "Evening Hop" Logistics</h4>
+                        <ul class="space-y-4 text-sm text-slate-600">
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                <span class="text-xl">🏰</span> 
+                                <div>
+                                    <strong>Manchester to Chester (Day 7):</strong> Just a 45-minute drive (60km) West on the M56. Leave Manchester office at 5:00 PM, arrive in Chester by 6:00 PM. Enjoy Roman walls and Tudor architecture until sunset.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                <span class="text-xl">🐉</span> 
+                                <div>
+                                    <strong>Bristol to Wales (Day 8):</strong> A 45-minute drive (65km) across the Prince of Wales Bridge. Leave Bristol office at 5:00 PM, enjoy dinner in Cardiff Bay, Wales. Cross a 3rd country off your list.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                <span class="text-xl">🎓</span> 
+                                <div>
+                                    <strong>London to Oxford (Day 16):</strong> No driving needed. Direct trains run from London Paddington or Marylebone to Oxford every 30 minutes, taking just 1 hour.
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <div>
-                        <h4 class="font-bold text-slate-700 mb-2">Driving Rules & Tips</h4>
-                        <div class="space-y-3">
-                            <div class="flex gap-3">
-                                <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">🇬🇧</div>
-                                <p class="text-sm text-slate-600"><strong>Keep Left:</strong> Driver sits on the right. Roundabouts go clockwise.</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">🅿️</div>
-                                <p class="text-sm text-slate-600"><strong>City Parking:</strong> In Manchester & Bristol, pre-book hotel parking. Street parking is scarce.</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">⛽</div>
-                                <p class="text-sm text-slate-600"><strong>Fuel:</strong> "Petrol" (Green) or "Diesel" (Black). Check car cap carefully.</p>
-                            </div>
+                        <h4 class="font-bold text-slate-700 mb-2">Core Rental Reminders</h4>
+                        <div class="p-4 bg-amber-50 rounded-lg border border-amber-100 mb-4">
+                            <div class="text-xl font-bold text-amber-900 mb-1">SUV Boot Space is King</div>
+                            <p class="text-sm text-amber-800">Do not compromise on the car class. 4 adults with 4 medium suitcases will not fit in a hatchback. Book a Standard/Full-Size SUV (e.g., Nissan X-Trail, Kia Sorento).</p>
                         </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-center gap-2"><span class="text-amber-500 font-bold">✔</span> Pick-up: Edinburgh Airport (May 25).</li>
+                            <li class="flex items-center gap-2"><span class="text-amber-500 font-bold">✔</span> Drop-off: London Heathrow (June 2).</li>
+                            <li class="flex items-center gap-2"><span class="text-amber-500 font-bold">✔</span> Book full Zero-Excess insurance.</li>
+                        </ul>
                     </div>
-                </div>
-            </div>
-
-            <!-- Route Table -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200">
-                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800">🛣️ Major Transit Legs</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500">
-                            <tr>
-                                <th class="px-6 py-3">Route</th>
-                                <th class="px-6 py-3">Dist (km)</th>
-                                <th class="px-6 py-3">Time (Non-stop)</th>
-                                <th class="px-6 py-3">Notes</th>
-                            </tr>
-                        </thead>
-                        <tbody id="route-table-body" class="divide-y divide-slate-100">
-                            <!-- JS populated -->
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
@@ -191,175 +163,198 @@
         <!-- VIEW 3: ANALYTICS -->
         <div id="analytics-view" class="hidden fade-in space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Driving Chart -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h4 class="text-lg font-bold text-slate-800 mb-4">Daily Driving Load (km)</h4>
+                    <h4 class="text-lg font-bold text-slate-800 mb-4">Driving Distance (Core vs Evening Hops)</h4>
                     <div class="chart-container">
                         <canvas id="driveChart"></canvas>
                     </div>
-                    <p class="text-xs text-slate-500 mt-2 text-center">Spikes indicate major travel days. Plan rest stops accordingly.</p>
+                    <p class="text-xs text-slate-500 mt-2 text-center">Dark blue indicates main transit. Orange indicates optional evening hops.</p>
                 </div>
 
-                <!-- Trip Mix -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                     <h4 class="text-lg font-bold text-slate-800 mb-4">Activity Balance</h4>
                     <div class="chart-container">
                         <canvas id="mixChart"></canvas>
                     </div>
-                    <p class="text-xs text-slate-500 mt-2 text-center">Healthy mix of Nature, City, and Work commitments.</p>
+                    <p class="text-xs text-slate-500 mt-2 text-center">Incorporating Oxford and Chester boosts the "History" profile significantly.</p>
                 </div>
 
-                <!-- Route Scatter -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 md:col-span-2">
-                    <h4 class="text-lg font-bold text-slate-800 mb-4">Route Trajectory (North to South)</h4>
+                    <h4 class="text-lg font-bold text-slate-800 mb-4">Trajectory Map (Includes Evening Hops)</h4>
                     <div class="chart-container">
                         <canvas id="routeMap"></canvas>
                     </div>
-                    <p class="text-xs text-slate-500 mt-2 text-center">Visualizing your journey from the Highlands down to Cornwall.</p>
+                    <p class="text-xs text-slate-500 mt-2 text-center">Visualizing your journey from Scotland down to London.</p>
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- Modal for Day Details -->
-    <div id="details-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-[60] flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col transform transition-all scale-100">
-            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 id="modal-title" class="text-xl font-bold text-slate-800">Day Details</h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+    <!-- Modal -->
+    <div id="details-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col transform transition-all scale-100 border border-slate-200">
+            <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-2xl">
+                <div>
+                    <span id="modal-subtitle" class="text-xs font-bold text-amber-600 uppercase tracking-wider block mb-1">Date</span>
+                    <h3 id="modal-title" class="text-2xl font-bold text-slate-800">Day Title</h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-800 bg-white rounded-full p-2 border border-slate-200 transition-colors">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
             </div>
-            <div id="modal-content" class="p-6 overflow-y-auto space-y-4">
+            <div id="modal-content" class="p-6 overflow-y-auto space-y-6 bg-white">
                 <!-- Content -->
-            </div>
-            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end">
-                <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 text-sm font-medium">Close</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- DATA ---
+        // --- DATA LAYER ---
         const itinerary = [
             {
                 day: 1, date: "Fri May 23", loc: "Edinburgh", type: "Travel/City",
                 title: "Arrival in Scotland",
-                desc: "Arrive Edinburgh Airport (EDI). Transfer to City Centre. Relax/Dinner.",
-                km: 0, time: "0h",
-                details: "Landing day. Do not rent car yet (save 2 days rental/parking). Take Tram to Princes Street. Walk the Royal Mile. Dinner at 'The Witchery' or 'Dishoom Edinburgh'.",
-                stay: "Edinburgh City Centre"
+                desc: "Land at EDI. Settle into the city.",
+                kmMain: 0, kmEvening: 0, time: "0h",
+                details: "Landing day. Take the Tram or Airport Bus to your city-center hotel. No car rental needed today. Evening walk around the New Town or Royal Mile.",
+                stay: "Edinburgh City Centre", specialEvening: null
             },
             {
-                day: 2, date: "Sat May 24", loc: "Edinburgh", type: "City",
+                day: 2, date: "Sat May 24", loc: "Edinburgh", type: "History",
                 title: "Edinburgh Exploration",
-                desc: "Edinburgh Castle, Victoria St, Arthur's Seat.",
-                km: 0, time: "0h",
-                details: "Full day in the capital. Morning: Edinburgh Castle (Book slots!). Lunch: Grassmarket. Afternoon: Hike Arthur's Seat for views or visit National Museum of Scotland.",
-                stay: "Edinburgh City Centre"
+                desc: "Edinburgh Castle, Royal Mile, Arthur's Seat.",
+                kmMain: 0, kmEvening: 0, time: "0h",
+                details: "Morning: Edinburgh Castle. Lunch in Grassmarket. Afternoon: Walk the Royal Mile to Holyrood Palace or hike Arthur's Seat.",
+                stay: "Edinburgh", specialEvening: null
             },
             {
-                day: 3, date: "Sun May 25", loc: "Aviemore", type: "Nature/Drive",
+                day: 3, date: "Sun May 25", loc: "Aviemore", type: "Nature",
                 title: "Into the Highlands",
-                desc: "Pick up Car. Drive North to Cairngorms.",
-                km: 200, time: "3h",
-                details: "Pick up SUV from Edinburgh Airport. Drive M90/A9 North. Stop at Pitlochry (Dam/Salmon Ladder). Continue to Aviemore. Evening walk at Loch Morlich.",
-                stay: "Aviemore or Inverness"
+                desc: "Pick up SUV. Drive North to Cairngorms.",
+                kmMain: 200, kmEvening: 0, time: "3h",
+                details: "Pick up SUV from EDI Airport. Drive M90/A9 North. Stop at Pitlochry. Continue to Aviemore. Visit Loch Morlich.",
+                stay: "Aviemore / Inverness", specialEvening: null
             },
             {
-                day: 4, date: "Mon May 26", loc: "Skye", type: "Nature/Drive",
+                day: 4, date: "Mon May 26", loc: "Isle of Skye", type: "Nature",
                 title: "Loch Ness & Skye",
-                desc: "Monster hunting & The Misty Isle.",
-                km: 240, time: "3.5h",
-                details: "Drive to Loch Ness (Urquhart Castle). Continue West on A87 via Eilean Donan Castle (Iconic photo stop). Cross Skye Bridge. Stay near Portree.",
-                stay: "Isle of Skye (Portree)"
+                desc: "Urquhart Castle & The Misty Isle.",
+                kmMain: 240, kmEvening: 0, time: "3.5h",
+                details: "Drive to Loch Ness (Urquhart Castle). Continue West on A87 via Eilean Donan Castle. Cross the Skye Bridge.",
+                stay: "Isle of Skye (Portree)", specialEvening: null
             },
             {
                 day: 5, date: "Tue May 27", loc: "Glasgow", type: "Drive/Nature",
                 title: "Glencoe to Glasgow",
-                desc: "The 'Skyfall' Route. Dramatic scenery.",
-                km: 340, time: "5h",
-                details: "Early start. Drive South via Fort William. Drive through Glencoe (stops: Three Sisters). Drive along Loch Lomond. Arrive Glasgow evening.",
-                stay: "Glasgow City"
+                desc: "Cinematic valley scenery.",
+                kmMain: 340, kmEvening: 0, time: "5h",
+                details: "Heavy driving day. Leave Skye, drive South via Fort William. Drive through the stunning Glencoe Valley (A82). Arrive in Glasgow West End.",
+                stay: "Glasgow", specialEvening: null
             },
             {
-                day: 6, date: "Wed May 28", loc: "Windermere", type: "Nature/Drive",
-                title: "Glasgow to Lake District",
-                desc: "Crossing the border into England.",
-                km: 240, time: "3h",
-                details: "Morning: Glasgow Cathedral/Necropolis. Drive M74 South. Enter Lake District. Afternoon: Bowness-on-Windermere, maybe a lake cruise.",
-                stay: "Windermere/Ambleside"
+                day: 6, date: "Wed May 28", loc: "Lake District", type: "Nature",
+                title: "Glasgow to The Lakes",
+                desc: "Cross into England's National Park.",
+                kmMain: 240, kmEvening: 0, time: "3h",
+                details: "Drive South on M74/M6. Arrive in the Lake District (Windermere/Ambleside). Enjoy a relaxing afternoon lake cruise.",
+                stay: "Windermere", specialEvening: null
             },
             {
-                day: 7, date: "Thu May 29", loc: "Manchester", type: "Work/City",
-                title: "Office Work (MCR)",
-                desc: "Morning drive to Manchester. Half-day Office.",
-                km: 130, time: "1.5h",
-                details: "Drive M6 South to Manchester (1.5 hrs). **12:00 PM - 5:00 PM: Office Work.** Evening: Dinner in Spinningfields or Northern Quarter.",
-                stay: "Manchester City Centre"
+                day: 7, date: "Thu May 29", loc: "Manchester / Chester", type: "Work/History",
+                title: "Office Day + Chester Excursion",
+                desc: "Work until 5 PM, then drive to 'The York Alternative'.",
+                kmMain: 130, kmEvening: 120, time: "1.5h + 1.5h (Eve)",
+                details: "Morning: Drive to Manchester (1.5 hrs). **12PM-5PM: Office Work.** <br><br><strong>EVENING EXCURSION (5:15 PM):</strong> Drive 45 mins West to <strong>Chester</strong>. This is your York alternative! Walk the ancient Roman walls, see the Tudor 'Rows', and have dinner by the river. Drive back to Manchester.",
+                stay: "Manchester", specialEvening: "Chester (Roman Walls/Tudor City)"
             },
             {
-                day: 8, date: "Fri May 30", loc: "Bristol", type: "Work/Drive",
-                title: "Office Work (Bristol)",
-                desc: "Early drive to Bristol. Half-day Office.",
-                km: 270, time: "3.5h",
-                details: "**Start very early (6:00 AM)** to beat traffic. Drive M6/M5 South to Bristol. **12:00 PM - 5:00 PM: Office Work.** Evening: Clifton Suspension Bridge.",
-                stay: "Bristol"
+                day: 8, date: "Fri May 30", loc: "Bristol / Wales", type: "Work/Culture",
+                title: "Cotswolds, Office + Wales Excursion",
+                desc: "Morning villages, afternoon work, evening in Wales.",
+                kmMain: 280, kmEvening: 130, time: "3.5h + 1.5h (Eve)",
+                details: "Leave Manchester 8 AM. Stop in the **Cotswolds** (Castle Combe) for 1 hour. Arrive Bristol. **12PM-5PM: Office Work.** <br><br><strong>EVENING EXCURSION (5:15 PM):</strong> Cross the Prince of Wales Bridge into <strong>Cardiff, Wales</strong> (45 mins). Have dinner in Cardiff Bay. Return to Bristol.",
+                stay: "Bristol", specialEvening: "Cardiff, Wales (Dinner in a 3rd Country)"
             },
             {
-                day: 9, date: "Sat May 31", loc: "Cornwall", type: "Nature/Drive",
-                title: "The Cornish Coast",
-                desc: "Drive to St Ives. Coastal relaxation.",
-                km: 300, time: "3.5h",
-                details: "Weekend! Drive M5/A30 South-West into Cornwall. Head to St Ives. Beach time, Tate St Ives, or coastal hike. Fish & Chips dinner.",
-                stay: "St Ives or Penzance"
+                day: 9, date: "Sat May 31", loc: "Bath / Cornwall", type: "History/Nature",
+                title: "Roman Baths & The Coast",
+                desc: "Morning in Bath, afternoon drive to St Ives.",
+                kmMain: 300, kmEvening: 0, time: "4h",
+                details: "Morning: Quick drive to **Bath**. See the Roman Baths and Royal Crescent. Afternoon: Drive South-West into Cornwall. Arrive in St Ives.",
+                stay: "St Ives / Penzance", specialEvening: null
             },
             {
                 day: 10, date: "Sun June 1", loc: "Cornwall", type: "Nature",
-                title: "St Michael's Mount",
-                desc: "The island castle & beaches.",
-                km: 30, time: "1h",
-                details: "Visit St Michael's Mount (check tide times to walk the causeway). Afternoon: Minack Theatre (outdoor amphitheater) or Lands End.",
-                stay: "St Ives or Penzance"
+                title: "Cornish Coastline",
+                desc: "St Michael's Mount & Land's End.",
+                kmMain: 50, kmEvening: 0, time: "1h",
+                details: "Visit St Michael's Mount (check tide times). Explore Land's End or watch a show at the Minack Theatre.",
+                stay: "Cornwall", specialEvening: null
             },
             {
-                day: 11, date: "Mon June 2", loc: "London", type: "Travel",
-                title: "Return to London",
-                desc: "Long drive back. Drop Rental Car.",
-                km: 460, time: "5.5h",
-                details: "Long transit day. Drive A30/M3 to London Heathrow. **Return Car.** Take Heathrow Express to Central London. Check in.",
-                stay: "London (Kensington/Marylebone)"
+                day: 11, date: "Mon June 2", loc: "Stonehenge / London", type: "Drive/History",
+                title: "Stonehenge & Return to London",
+                desc: "Prehistoric pit-stop and dropping the car.",
+                kmMain: 460, kmEvening: 0, time: "5h",
+                details: "Head East on A303. **Stop at Stonehenge** (Pre-book tickets, 1.5 hr stop). Continue to London Heathrow. **Return the SUV.** Take train to Central London.",
+                stay: "London", specialEvening: null
             },
             {
                 day: 12, date: "Tue June 3", loc: "London", type: "City",
                 title: "London Leisure",
-                desc: "Shopping & Pre-Match relax.",
-                km: 0, time: "0h",
-                details: "Oxford Street shopping, Covent Garden, or Hyde Park. Easy day before the match.",
-                stay: "London"
+                desc: "Relaxation before the big match.",
+                kmMain: 0, kmEvening: 0, time: "0h",
+                details: "A relaxed day. Walk through Hyde Park, shop on Oxford Street, or visit Covent Garden.",
+                stay: "London", specialEvening: null
             },
             {
-                day: 13, date: "Wed June 4", loc: "London", type: "Sports",
+                day: 13, date: "Wed June 4", loc: "London (Lords)", type: "Sports",
                 title: "🏏 LORDS: ENG vs NZ",
                 desc: "The Home of Cricket. Full Day.",
-                km: 0, time: "0h",
-                details: "Head to St John's Wood. **Event: England vs New Zealand Test Match.** Enjoy the atmosphere at Lord's.",
-                stay: "London"
+                kmMain: 0, kmEvening: 0, time: "0h",
+                details: "Take Tube to St John's Wood. **Event: England vs New Zealand Test Match.** Enjoy world-class cricket.",
+                stay: "London", specialEvening: null
             },
             {
-                day: 14, date: "Thu June 5", loc: "London", type: "City",
+                day: 14, date: "Thu June 5", loc: "London", type: "History",
                 title: "Historic London",
                 desc: "Tower of London, The Shard.",
-                km: 0, time: "0h",
-                details: "Tower of London (Crown Jewels). Borough Market for lunch. The Shard view or Sky Garden.",
-                stay: "London"
+                kmMain: 0, kmEvening: 0, time: "0h",
+                details: "Morning: Tower of London (Crown Jewels). Lunch: Borough Market. Afternoon: The Shard or Sky Garden.",
+                stay: "London", specialEvening: null
             },
             {
-                day: 15, date: "Fri June 6", loc: "London", type: "Travel",
-                title: "Departure",
-                desc: "Fly home from LHR/LGW.",
-                km: 0, time: "0h",
-                details: "Last minute souvenirs. Train to airport. Fly out.",
-                stay: "N/A"
+                day: 15, date: "Fri June 6", loc: "London / Wembley", type: "Sports/Culture",
+                title: "Wembley & Museums",
+                desc: "Stadium Tour & British Museum.",
+                kmMain: 0, kmEvening: 0, time: "0h",
+                details: "Morning: Wembley Stadium Tour. Afternoon: British Museum or Natural History Museum.",
+                stay: "London", specialEvening: null
+            },
+            {
+                day: 16, date: "Sat June 7", loc: "Oxford", type: "History",
+                title: "Day Trip: Oxford University",
+                desc: "The City of Dreaming Spires.",
+                kmMain: 0, kmEvening: 0, time: "0h",
+                details: "Take a direct train (1 hr) from London Paddington to **Oxford**. Explore Christ Church College (Harry Potter filming location), the Radcliffe Camera, and Bodleian Library. Return to London for farewell dinner.",
+                stay: "London", specialEvening: "Oxford Integration"
+            },
+            {
+                day: 17, date: "Sun June 8", loc: "London", type: "City",
+                title: "Buffer / Shopping",
+                desc: "Final day wrap up.",
+                kmMain: 0, kmEvening: 0, time: "0h",
+                details: "Pick up final souvenirs, enjoy a traditional Sunday Roast at a local pub.",
+                stay: "London", specialEvening: null
+            },
+            {
+                day: 18, date: "Mon June 9", loc: "Departure", type: "Travel",
+                title: "Fly Home",
+                desc: "Depart from LHR/LGW.",
+                kmMain: 0, kmEvening: 0, time: "0h",
+                details: "Take the Heathrow Express or Elizabeth Line to the airport. End of trip.",
+                stay: "N/A", specialEvening: null
             }
         ];
 
@@ -367,7 +362,6 @@
 
         function init() {
             renderItinerary();
-            renderRouteTable();
             renderCharts();
         }
 
@@ -391,32 +385,37 @@
             const container = document.getElementById('day-list');
             itinerary.forEach(item => {
                 let badgeColor = "bg-slate-100 text-slate-700";
-                if(item.type.includes("Work")) badgeColor = "bg-purple-100 text-purple-700 border-purple-200";
-                if(item.type.includes("Nature")) badgeColor = "bg-emerald-100 text-emerald-700 border-emerald-200";
-                if(item.type.includes("Sports")) badgeColor = "bg-orange-100 text-orange-700 border-orange-200";
+                if(item.type.includes("Work")) badgeColor = "bg-blue-100 text-blue-800 border-blue-200";
+                if(item.type.includes("Nature")) badgeColor = "bg-emerald-100 text-emerald-800 border-emerald-200";
+                if(item.type.includes("Sports")) badgeColor = "bg-orange-100 text-orange-800 border-orange-200";
+                if(item.type.includes("History")) badgeColor = "bg-amber-100 text-amber-800 border-amber-200";
+
+                const eveBadge = item.specialEvening ? `<div class="mt-3 inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-800 text-xs px-2.5 py-1.5 rounded-md font-semibold"><span class="text-sm">🌇</span> Evening: ${item.specialEvening}</div>` : '';
 
                 const card = document.createElement('div');
-                card.className = "bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col md:flex-row gap-4 items-start md:items-center";
+                card.className = `bg-white p-5 rounded-xl border ${item.specialEvening ? 'border-amber-300 shadow-md' : 'border-slate-200 shadow-sm'} hover:shadow-lg transition-all cursor-pointer flex flex-col md:flex-row gap-5 items-start md:items-center relative`;
                 card.onclick = () => openModal(item);
                 
                 card.innerHTML = `
-                    <div class="flex-shrink-0 w-16 h-16 bg-slate-50 rounded-lg flex flex-col items-center justify-center border border-slate-100">
-                        <span class="text-xs text-slate-500 font-bold uppercase">Day</span>
-                        <span class="text-xl font-bold text-slate-800">${item.day}</span>
+                    <div class="flex-shrink-0 w-16 h-16 ${item.specialEvening ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-100'} rounded-xl flex flex-col items-center justify-center border">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Day</span>
+                        <span class="text-2xl font-black ${item.specialEvening ? 'text-amber-700' : 'text-slate-800'}">${item.day}</span>
                     </div>
                     <div class="flex-grow">
-                        <div class="flex flex-wrap gap-2 mb-1">
-                            <span class="text-xs font-bold px-2 py-0.5 rounded border ${badgeColor}">${item.type}</span>
-                            <span class="text-xs font-medium text-slate-400 flex items-center">📅 ${item.date}</span>
-                            <span class="text-xs font-medium text-slate-400 flex items-center">📍 ${item.loc}</span>
+                        <div class="flex flex-wrap gap-2 mb-1.5 items-center">
+                            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded border ${badgeColor} uppercase tracking-wider">${item.type}</span>
+                            <span class="text-xs font-semibold text-slate-500 flex items-center">📅 ${item.date}</span>
+                            <span class="text-xs font-semibold text-slate-500 flex items-center">📍 ${item.loc}</span>
                         </div>
-                        <h4 class="text-lg font-bold text-slate-800">${item.title}</h4>
-                        <p class="text-sm text-slate-600">${item.desc}</p>
+                        <h4 class="text-lg font-bold text-slate-900">${item.title}</h4>
+                        <p class="text-sm text-slate-600 mt-1">${item.desc}</p>
+                        ${eveBadge}
                     </div>
-                    <div class="flex-shrink-0 text-right min-w-[80px]">
-                        ${item.km > 0 ? 
-                            `<div class="text-sm font-bold text-slate-700">🚗 ${item.km} km</div><div class="text-xs text-slate-500">${item.time} drive</div>` : 
-                            `<div class="text-sm text-slate-400">No Driving</div>`
+                    <div class="flex-shrink-0 text-left md:text-right min-w-[100px] bg-slate-50 md:bg-transparent p-3 md:p-0 rounded-lg w-full md:w-auto mt-2 md:mt-0">
+                        ${(item.kmMain + item.kmEvening) > 0 ? 
+                            `<div class="text-sm font-bold text-slate-800 flex items-center md:justify-end gap-1"><span class="text-blue-600">🚗</span> ${item.kmMain + item.kmEvening} km</div>
+                             <div class="text-xs text-slate-500 font-medium">${item.time}</div>` : 
+                            `<div class="text-sm text-slate-400 font-medium">🚶 No Driving</div>`
                         }
                     </div>
                 `;
@@ -424,43 +423,40 @@
             });
         }
 
-        function renderRouteTable() {
-            const tbody = document.getElementById('route-table-body');
-            const drives = itinerary.filter(i => i.km > 0);
-            drives.forEach(d => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
-                tr.innerHTML = `
-                    <td class="px-6 py-4 font-medium text-slate-900">${d.loc} Leg</td>
-                    <td class="px-6 py-4">${d.km}</td>
-                    <td class="px-6 py-4">${d.time}</td>
-                    <td class="px-6 py-4 text-xs">${d.stay.split('(')[0]}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
         function openModal(item) {
-            document.getElementById('modal-title').textContent = `${item.title} (${item.date})`;
+            document.getElementById('modal-subtitle').textContent = `Day ${item.day} • ${item.date}`;
+            document.getElementById('modal-title').innerHTML = `${item.title}`;
+            
+            let highlightBox = '';
+            if(item.specialEvening) {
+                highlightBox = `
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl mb-4">
+                    <h5 class="text-amber-900 font-bold text-sm flex items-center gap-2 mb-1">🌇 Added Excursion / Feature</h5>
+                    <p class="text-amber-800 text-sm font-medium">${item.specialEvening}</p>
+                </div>`;
+            }
+
             document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="p-3 bg-slate-50 rounded border border-slate-100">
-                            <div class="text-xs text-slate-500 uppercase">Location</div>
-                            <div class="font-medium text-slate-800">${item.loc}</div>
-                        </div>
-                        <div class="p-3 bg-slate-50 rounded border border-slate-100">
-                            <div class="text-xs text-slate-500 uppercase">Driving</div>
-                            <div class="font-medium text-slate-800">${item.km} km / ${item.time}</div>
-                        </div>
+                ${highlightBox}
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-center">
+                        <div class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-1">Location Focus</div>
+                        <div class="font-bold text-slate-800">${item.loc}</div>
                     </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-center">
+                        <div class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-1">Total Driving</div>
+                        <div class="font-bold text-slate-800">${(item.kmMain + item.kmEvening) > 0 ? `${item.kmMain + item.kmEvening} km` : 'None'}</div>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="font-bold text-slate-900 text-lg mb-2 border-b border-slate-100 pb-2">Plan Details</h5>
+                    <p class="text-slate-700 leading-relaxed">${item.details}</p>
+                </div>
+                 <div class="bg-slate-800 text-white p-4 rounded-xl flex items-center gap-3">
+                    <span class="text-2xl">🏨</span>
                     <div>
-                        <h5 class="font-bold text-slate-800 mb-2">Plan Details</h5>
-                        <p class="text-slate-600 leading-relaxed">${item.details}</p>
-                    </div>
-                     <div>
-                        <h5 class="font-bold text-slate-800 mb-2">Accommodation</h5>
-                        <p class="text-slate-600">🏨 ${item.stay}</p>
+                        <h5 class="font-bold text-sm text-slate-300">Base / Accommodation</h5>
+                        <p class="font-medium">${item.stay}</p>
                     </div>
                 </div>
             `;
@@ -472,30 +468,40 @@
         }
 
         function renderCharts() {
-            // 1. Driving Chart
+            // 1. Stacked Driving Chart
             new Chart(document.getElementById('driveChart'), {
                 type: 'bar',
                 data: {
                     labels: itinerary.map(i => `D${i.day}`),
-                    datasets: [{
-                        label: 'Kilometers',
-                        data: itinerary.map(i => i.km),
-                        backgroundColor: itinerary.map(i => i.km > 300 ? '#ef4444' : (i.km > 100 ? '#6366f1' : '#cbd5e1')),
-                        borderRadius: 4
-                    }]
+                    datasets: [
+                        {
+                            label: 'Core Transit (km)',
+                            data: itinerary.map(i => i.kmMain),
+                            backgroundColor: '#3b82f6',
+                        },
+                        {
+                            label: 'Evening Hops (km)',
+                            data: itinerary.map(i => i.kmEvening),
+                            backgroundColor: '#f59e0b',
+                            borderRadius: { topLeft: 4, topRight: 4 }
+                        }
+                    ]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { 
+                        x: { stacked: true, grid: { display: false } },
+                        y: { stacked: true, beginAtZero: true, grid: { color: '#f1f5f9' } }
+                    }
                 }
             });
 
             // 2. Mix Chart
             const types = {};
             itinerary.forEach(i => {
-                const t = i.type.split('/')[0];
-                types[t] = (types[t] || 0) + 1;
+                const parts = i.type.split('/');
+                parts.forEach(p => types[p] = (types[p] || 0) + 1);
             });
             new Chart(document.getElementById('mixChart'), {
                 type: 'doughnut',
@@ -503,8 +509,8 @@
                     labels: Object.keys(types),
                     datasets: [{
                         data: Object.values(types),
-                        backgroundColor: ['#6366f1', '#10b981', '#f97316', '#64748b', '#a855f7'],
-                        borderWidth: 0
+                        backgroundColor: ['#64748b', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'],
+                        borderWidth: 2, borderColor: '#ffffff'
                     }]
                 },
                 options: {
@@ -514,33 +520,36 @@
             });
 
             // 3. Route Map (Scatter)
-            // Simulating Latitude (Y) vs Day (X)
-            // North (Scotland) ~ 10, South (Cornwall) ~ 1
             const latMap = { 
-                "Edinburgh": 9, "Aviemore": 10, "Skye": 9.5, "Glasgow": 8, 
-                "Windermere": 6, "Manchester": 5, "Bristol": 3, "Cornwall": 1, "London": 2 
+                "Edinburgh": 9, "Aviemore": 10, "Isle of Skye": 9.5, "Glasgow": 8, 
+                "Lake District": 6, "Manchester / Chester": 5, "Bristol / Wales": 3.5, 
+                "Bath / Cornwall": 2.5, "Cornwall": 1, "Stonehenge / London": 2, 
+                "London": 2.2, "London (Lords)": 2.2, "London / Wembley": 2.3, "Oxford": 3, "Departure": 2.2
             };
-            const mapData = itinerary.map(i => ({ x: i.day, y: latMap[i.loc] || 2 }));
+            
+            const mapData = itinerary.map(i => ({ x: i.day, y: latMap[i.loc], loc: i.loc }));
             
             new Chart(document.getElementById('routeMap'), {
-                type: 'scatter',
+                type: 'line',
                 data: {
                     datasets: [{
                         label: 'Route Path',
                         data: mapData,
-                        showLine: true,
-                        borderColor: '#0f172a',
-                        backgroundColor: '#6366f1',
-                        pointRadius: 6,
-                        tension: 0.3
+                        borderColor: '#94a3b8',
+                        backgroundColor: (ctx) => {
+                            // Highlight the evening excursion days in orange
+                            return [7, 8, 16].includes(ctx.raw?.x) ? '#f59e0b' : '#3b82f6';
+                        },
+                        pointRadius: (ctx) => [7, 8, 16].includes(ctx.raw?.x) ? 8 : 5,
+                        fill: false, tension: 0.2
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => `Day ${ctx.raw.x}: ${ctx.raw.loc}` } } },
                     scales: {
-                        y: { display: true, title: {display: true, text: '← South | North →'}, ticks: {display: false} },
-                        x: { title: {display: true, text: 'Day of Trip'} }
+                        y: { display: true, title: {display: true, text: '← South | Geo Progression | North →'}, ticks: {display: false}, grid: { display: false } },
+                        x: { title: {display: true, text: 'Timeline (Days)'}, grid: { display: false } }
                     }
                 }
             });
